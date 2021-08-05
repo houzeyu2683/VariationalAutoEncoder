@@ -92,6 +92,7 @@ class model(nn.Module):
         pass
 
     def reparameterize(self, value):
+
         """
         Reparameterization trick to sample from N(mu, var) from
         N(0,1).
@@ -123,7 +124,7 @@ class model(nn.Module):
         # Compute reconstruction loss (alpha) and kl divergence (beta)
         # For KL divergence, see Appendix B in VAE paper or http://yunjey47.tistory.com/43
         # reconst_loss = F.binary_cross_entropy(x_reconst, x, size_average=False)
-        loss['MSE'] = functional.mse_loss(value['reconstruction'], value['image'], reduction='sum')
+        loss['MSE'] = functional.mse_loss(value['reconstruction'], value['image'], reduction='mean')
         # reconst_loss = functional.mse_loss(pixel, x, reduction='sum')
         # kl_div = - 0.5 * torch.sum(1 + log_var - mu.pow(2) - log_var.exp())
         # kl_div = - torch.sum(1 + eta - mu.pow(2) - eta.exp())
