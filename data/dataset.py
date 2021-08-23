@@ -42,8 +42,11 @@ class process:
         if(self.item['mode']=='train'):
 
             blueprint = [
-                kit.Resize(size),
-                kit.ToTensor()
+                kit.RandomHorizontalFlip(), 
+                kit.CenterCrop(148), 
+                kit.Resize(size), 
+                kit.ToTensor(),
+                kit.Lambda(lambda x: 2 * x - 1)
             ]
             convert = kit.Compose(blueprint)
             picture = convert(picture).type(torch.float)
@@ -52,8 +55,10 @@ class process:
         if(self.item['mode']=='test'):
 
             blueprint = [
-                kit.Resize(size),
-                kit.ToTensor()
+                kit.CenterCrop(148), 
+                kit.Resize(size), 
+                kit.ToTensor(),
+                kit.Lambda(lambda x: 2 * x - 1)
             ]
             convert = kit.Compose(blueprint)
             picture = convert(picture).type(torch.float)
@@ -63,3 +68,21 @@ class process:
 
     pass
 
+    # def imagev2(self):
+
+    #     picture  = PIL.Image.open(self.item['link']).convert("RGB")
+    #     size     = (64, 64)
+    #     SetRange = kit.Lambda(lambda X: 2 * X - 1.)
+    #     # SetScale = transforms.Lambda(lambda X: X/X.sum(0).expand_as(X))
+    #     convert = kit.Compose([kit.RandomHorizontalFlip(), kit.CenterCrop(148), kit.Resize(size), kit.ToTensor(), SetRange])
+    #     picture = convert(picture).type(torch.float)
+    #     return(picture)
+        # if self.params['dataset'] == 'celeba':
+        #     transform = transforms.Compose([transforms.RandomHorizontalFlip(),
+        #                                     transforms.CenterCrop(148),
+        #                                     transforms.Resize(self.params['img_size']),
+        #                                     transforms.ToTensor(),
+        #                                     SetRange])
+        # else:
+        #     raise ValueError('Undefined dataset type')
+        # return transform

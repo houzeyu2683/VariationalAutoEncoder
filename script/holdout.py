@@ -2,34 +2,35 @@
 import data
 import network
 
+tabulation = data.tabulation(path="../##Data##/celebfacesattribute/csv/index.csv")
+tabulation.read()
 '''
 Example
     `tabulation.data`
     `tabulation.train`
     `tabulation.test`
 '''
-tabulation = data.tabulation(path="../##Data##/celebfacesattribute/csv/index.csv")
-tabulation.read()
 
+tabulation.hold(ratio=0.2)
 '''
 Example
     `tabulation.grid.train`
     `tabulation.grid.exam`
 '''
-tabulation.hold(ratio=0.2)
 
+dataset = {
+    'train' : data.dataset(tabulation.grid.train),
+    'exam'  : data.dataset(tabulation.grid.exam) ,
+    'test'  : data.dataset(tabulation.test)      ,
+}
 '''
 Example
     `dataset['train'].get(0)`
     `dataset['exam'].get(0)`
     `dataset['test'].get(0)`
 '''
-dataset = {
-    'train' : data.dataset(tabulation.grid.train),
-    'exam'  : data.dataset(tabulation.grid.exam) ,
-    'test'  : data.dataset(tabulation.test)      ,
-}
 
+loader = data.loader(train=dataset['train'], exam=dataset['exam'], test=dataset['test'], batch=144)
 '''
 Example
     `next(iter(loader.train))`
@@ -37,15 +38,14 @@ Example
     `next(iter(loader.test))`
     `loader.save(what='batch', folder='./')`
 '''
-loader = data.loader(train=dataset['train'], exam=dataset['exam'], test=dataset['test'], batch=64)
 
+model     = network.VanillaVAE()
+optimizer = network.optimizer.adam(model)
+machine   = network.machine(model, optimizer=optimizer, folder="LOG")
 '''
 Example
     `machine.learn(loader=loader.train)`
 '''
-model     = network.model()
-optimizer = network.optimizer.adam(model)
-machine   = network.machine(model, optimizer=optimizer, folder="LOG")
 
 for i in range(5):
 

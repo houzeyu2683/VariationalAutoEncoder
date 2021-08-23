@@ -37,6 +37,7 @@ class machine:
         pass
 
         progress = tqdm.tqdm(loader, leave=False)
+        record = None
         for batch in progress:
 
             ##  Handle batch.
@@ -46,63 +47,43 @@ class machine:
             self.optimizer.zero_grad()
             value = self.model(batch)
             loss = self.model.cost(value)
+            loss['total'].backward()
+            # loss = loss['total']
             #loss = self.criterion.to(self.device)(score, target)
-            loss.backward()
+            # loss.backward()
             self.optimizer.step()
+            # return(loss)
+            score = {k: round(v.item(),3) for k, v in loss.items()}
+            progress.set_description("{}".format(score))
+            if(record==None):
 
-            ##  Show message to progress bar.
-            loss = round(loss.item(), 3)
-            progress.set_description("loss:{}".format(loss))
+                record = {k:[v] for k, v in score.items()}
+                pass
+
+            else:
+                # return(record, score)
+                for k in score:
+
+                    record[k] += [score[k]]
+                    pass
+
+                pass
+
             pass
-
+        
+        record = pandas.DataFrame(record)
+        record.to_csv(os.path.join(self.folder, "record-{}.csv".format(self.checkpoint)))
         pass
-
-    # def evaluate(self, loader):
-
-    #     self.model.eval()
-    #     self.model = self.model.to(self.device)
-    #     pass
-
-    #     evaluation = {
-    #         "loss" : []
-    #     }
-    #     for batch in tqdm.tqdm(loader, leave=False):
-
-    #         with torch.no_grad():
-            
-    #             batch = self.bundle(batch)
-    #             score, target = self.model(batch)
-    #             loss  = self.criterion(score, target).cpu().detach().numpy().item()
-    #             evaluation['loss'] += [loss]
-    #             pass
-            
-    #         pass
-
-    #     ##  Summarize record.
-    #     evaluation['loss']  = numpy.mean(evaluation['loss'])
-    #     return(evaluation)
 
     def save(self, what='checkpoint'):
 
         ##  Save the checkpoint.
         if(what=='checkpoint'):
 
-            path = os.path.join(self.folder, self.checkpoint+".checkpoint")
+            path = os.path.join(self.folder, "model-"+self.checkpoint+".checkpoint")
             torch.save(self.model.state_dict(), path)
             print("save the weight of model to {}".format(path))
             pass
-
-        # ##  Save the measurement.
-        # if(what=='measurement'):    
-
-        #     path = os.path.join(self.folder, self.checkpoint + ".measurement")
-        #     with open(path, 'wb') as paper:
-
-        #         pickle.dump(self.measurement, paper)
-        #         pass
-
-        #     print("save the checkpoint of measurement to {}".format(path))
-        #     pass
   
     def update(self, what='checkpoint'):
 
@@ -165,9 +146,9 @@ class machine:
                     origin = utils.make_grid(value['image'])
                     reconstruction = utils.make_grid(value['reconstruction'])
                     generation = utils.make_grid(self.model.generate(size))
-                    utils.save_image(origin, link['origin']+'-{}.jpg'.format(index))
-                    utils.save_image(reconstruction, link['reconstruction']+'-{}.jpg'.format(index))
-                    utils.save_image(generation, link['generation']+'-{}.jpg'.format(index))
+                    utils.save_image(origin, link['origin']+'-{}.jpg'.format(index), normalize=True)
+                    utils.save_image(reconstruction, link['reconstruction']+'-{}.jpg'.format(index), normalize=True)
+                    utils.save_image(generation, link['generation']+'-{}.jpg'.format(index), normalize=True)
                     pass
 
                 pass

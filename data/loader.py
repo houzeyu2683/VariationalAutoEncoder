@@ -14,12 +14,12 @@ class loader:
 
         if(exam):
             
-            self.exam = DataLoader(exam, batch_size=batch, shuffle=False , drop_last=False)
+            self.exam = DataLoader(exam, batch_size=64, shuffle=False , drop_last=False)
             pass
 
         if(test):
 
-            self.test  = DataLoader(test , batch_size=batch, shuffle=False, drop_last=False)
+            self.test  = DataLoader(test , batch_size=64, shuffle=False, drop_last=False)
             pass
 
         pass
