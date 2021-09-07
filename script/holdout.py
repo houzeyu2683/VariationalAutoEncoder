@@ -1,27 +1,35 @@
 
+##
+##
 import data
 import network
 
-tabulation = data.tabulation(path="../##Data##/celebfacesattribute/csv/index.csv")
+tabulation = data.tabulation(path="./celebfacesattributesample/csv/index.csv")
 tabulation.read()
+tabulation.data['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.data['image']]
+tabulation.train['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.train['image']]
+tabulation.exam['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.exam['image']]
+tabulation.test['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.test['image']]
+
 '''
 Example
     `tabulation.data`
     `tabulation.train`
+    `tabulation.exam`
     `tabulation.test`
 '''
 
-tabulation.hold(ratio=0.2)
-'''
-Example
-    `tabulation.grid.train`
-    `tabulation.grid.exam`
-'''
+# tabulation.hold(ratio=0.2)
+# '''
+# Example
+#     `tabulation.grid.train`
+#     `tabulation.grid.exam`
+# '''
 
 dataset = {
-    'train' : data.dataset(tabulation.grid.train),
-    'exam'  : data.dataset(tabulation.grid.exam) ,
-    'test'  : data.dataset(tabulation.test)      ,
+    'train' : data.dataset(tabulation.train),
+    'exam'  : data.dataset(tabulation.exam) ,
+    'test'  : data.dataset(tabulation.test) ,
 }
 '''
 Example
@@ -39,7 +47,7 @@ Example
     `loader.save(what='batch', folder='./')`
 '''
 
-model     = network.VanillaVAE()
+model     = network.model()
 optimizer = network.optimizer.adam(model)
 machine   = network.machine(model, optimizer=optimizer, folder="LOG")
 '''
@@ -47,7 +55,7 @@ Example
     `machine.learn(loader=loader.train)`
 '''
 
-for i in range(5):
+for i in range(25):
 
     machine.learn(loader=loader.train)
     machine.save(what='checkpoint')

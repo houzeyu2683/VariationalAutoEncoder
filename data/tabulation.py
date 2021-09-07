@@ -10,17 +10,16 @@ class tabulation:
         pass
     
     def read(self):
-        '''
-        根據資料配置來定義資料集，以資料表為基礎，在資料表前處理就要先添加欄位 'mode' ，其內部的值包含 'train' 與 'test' 。
-        '''
 
         dataframe  = pandas.read_csv(self.path)
         self.data  = dataframe
         self.train = dataframe[dataframe['mode']=='train'].copy().reset_index(drop=True)
+        self.exam  = dataframe[dataframe['mode']=='exam' ].copy().reset_index(drop=True)
         self.test  = dataframe[dataframe['mode']=='test' ].copy().reset_index(drop=True)
         pass
     
     def fold(self, size=None, target=None, seed=0):
+
         '''
         Input
             `size` : The size of k-fold.
@@ -52,6 +51,7 @@ class tabulation:
         pass
     
     def hold(self, ratio=0.1, target=None, seed=0):
+        
         '''
         Input
             `ratio` : The ratio of holdout.

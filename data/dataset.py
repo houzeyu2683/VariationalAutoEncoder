@@ -1,8 +1,12 @@
 
+##
+##
 import torch
 import PIL.Image, PIL.ImageStat
 from torchvision import transforms as kit
 
+##
+##
 class dataset(torch.utils.data.Dataset):
 
     def __init__(self, table):
@@ -28,6 +32,8 @@ class dataset(torch.utils.data.Dataset):
 
     pass
 
+##
+##
 class process:
 
     def __init__(self, item):
@@ -52,7 +58,7 @@ class process:
             picture = convert(picture).type(torch.float)
             return(picture)
             
-        if(self.item['mode']=='test'):
+        else:
 
             blueprint = [
                 kit.CenterCrop(148), 

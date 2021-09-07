@@ -1,7 +1,12 @@
+
+
+##
 import torch
 from torch import nn
 from torch.nn import functional
 
+
+##
 class encoder(nn.Module):
 
     def __init__(self):
@@ -41,6 +46,8 @@ class encoder(nn.Module):
         # log_var = self.fc_var(result)
         return(output)
 
+
+##
 class decoder(nn.Module):
 
     def __init__(self):
@@ -69,37 +76,16 @@ class decoder(nn.Module):
             )
         }
         self.layer = nn.ModuleDict(layer)
-        # self.decoder_input = nn.Linear(128, 512 * 4)
-        # self.fc_decoder = nn.Sequential(
-        #     nn.ConvTranspose2d(512, 256, kernel_size=3, stride = 2, padding=1, output_padding=1),
-        #     nn.BatchNorm2d(256),
-        #     nn.LeakyReLU(),
-        #     nn.ConvTranspose2d(256, 128, kernel_size=3, stride = 2, padding=1, output_padding=1),
-        #     nn.BatchNorm2d(128),
-        #     nn.LeakyReLU(),
-        #     nn.ConvTranspose2d(128, 64, kernel_size=3, stride = 2, padding=1, output_padding=1),
-        #     nn.BatchNorm2d(64),
-        #     nn.LeakyReLU(),
-        #     nn.ConvTranspose2d(64, 32, kernel_size=3, stride = 2, padding=1, output_padding=1),
-        #     nn.BatchNorm2d(32),
-        #     nn.LeakyReLU(),
-        #     nn.ConvTranspose2d(32, 32, kernel_size=3, stride=2, padding=1, output_padding=1),
-        #     nn.BatchNorm2d(32),
-        #     nn.LeakyReLU(),
-        #     nn.Conv2d(32, out_channels= 3, kernel_size= 3, padding= 1),
-        #     nn.Tanh()
-        # )
+        return
 
     def forward(self, z):
 
         feature = self.layer['to feature'](z).view(-1, 512, 2, 2)
         image = self.layer['to image'](feature)
-        # result = self.decoder_input(z)
-        # result = result.view(-1, 512, 2, 2)
-        # result = self.fc_decoder(result)
-        # result = self.final_layer(result)
         return(image)
 
+
+##
 class model(nn.Module):
 
     def __init__(self):
@@ -154,9 +140,9 @@ class model(nn.Module):
         }
         weight = {"kl-divergence":0.001}
         loss['reconstruction'] = functional.mse_loss(value['reconstruction'], value['image'])
-        divergence = 0.5 * torch.sum(1 + value['log(sigma^2)'] - value['mu'] ** 2 - value['log(sigma^2)'].exp(), dim = 1) 
+        divergence = - 0.5 * torch.sum(1 + value['log(sigma^2)'] - value['mu'] ** 2 - value['log(sigma^2)'].exp(), dim = 1) 
         loss['kl-divergence'] = torch.mean(divergence, dim = 0)
-        loss['total'] = loss['reconstruction'] + weight['kl-divergence'] * (-1 * loss['kl-divergence'])
+        loss['total'] = loss['reconstruction'] + weight['kl-divergence'] * loss['kl-divergence']
 
         #loss['kl-divergence'] = -1 * loss['kl-divergence']
         return(loss)

@@ -1,20 +1,33 @@
 
-"圖片存放在某個資料夾，根據圖片所在的位置建立表，存起來方便使用，減少記憶體過多浪費。"
-
+##
+##  The packages.
 import pandas, os
+import sklearn.model_selection
 
-folder = os.path.join(os.environ['HOME'], "Public/##Data##/CelebFacesAttribute/JPG/")
+"""
+影像資料儲存於資料夾，根據影像名稱以及路徑，建立資料表。
+"""
+
+##
+##  Handle the link of image.
+root = "/media/houzeyu2683/120C3F2F0C3F0D6B/DataSetGroup/celebfacesattribute/"
+folder = os.path.join(root, "jpg")
 group = os.listdir(folder)
 link = [os.path.join(folder, i) for i in group]
-table = pandas.DataFrame({'image':group, "link":link, 'mode':"train"})
-pass
+table = pandas.DataFrame({'image':group, "link":link, 'mode':"undefine"})
 
-table = table.sample(len(table)).reset_index(drop=True)
-size = int(len(table) * 0.1)
-table.loc[range(size), 'mode'] = 'test'
-pass
+##
+##  Generate train, exam and test.
+table = table.sample(len(table)).reset_index(drop=True).copy()
+train, other = sklearn.model_selection.train_test_split(table, test_size=0.2, random_state=0)
+exam, test = sklearn.model_selection.train_test_split(other, test_size=0.5, random_state=0)
+train['mode'] = "train"
+exam['mode'] = 'exam'
+test['mode'] = 'test'
+table = pandas.concat([train,exam, test])
 
-record = os.path.join(os.environ['HOME'], "Public/##Data##/CelebFacesAttribute/CSV/")
+##  
+record = os.path.join(root, 'csv')
 os.makedirs(record, exist_ok=True)
 table.to_csv(os.path.join(record, 'index.csv'), index=False)
 pass
