@@ -13,11 +13,17 @@ class tabulation:
 
         dataframe  = pandas.read_csv(self.path)
         self.data  = dataframe
-        self.train = dataframe[dataframe['mode']=='train'].copy().reset_index(drop=True)
-        self.exam  = dataframe[dataframe['mode']=='exam' ].copy().reset_index(drop=True)
-        self.test  = dataframe[dataframe['mode']=='test' ].copy().reset_index(drop=True)
         pass
     
+    def distinct(self, what='data'):
+
+        if(what=='data'):
+
+            self.train = self.data[self.data['mode']=='train'].copy().reset_index(drop=True)
+            self.exam  = self.data[self.data['mode']=='exam' ].copy().reset_index(drop=True)
+            self.test  = self.data[self.data['mode']=='test' ].copy().reset_index(drop=True)
+            pass
+
     def fold(self, size=None, target=None, seed=0):
 
         '''

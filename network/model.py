@@ -95,14 +95,14 @@ class model(nn.Module):
         self.decoder = decoder()
         return
 
+    """
+    Reparameterization trick to sample from N(mu, var) from N(0,1).
+    :param mu: (Tensor) Mean of the latent Gaussian [B x D]
+    :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
+    :return: (Tensor) [B x D]
+    """
     def reparameterize(self, value):
-        """
-        Reparameterization trick to sample from N(mu, var) from
-        N(0,1).
-        :param mu: (Tensor) Mean of the latent Gaussian [B x D]
-        :param logvar: (Tensor) Standard deviation of the latent Gaussian [B x D]
-        :return: (Tensor) [B x D]
-        """
+
         std = torch.exp(0.5 * value['log(sigma^2)'])
         eps = torch.randn_like(std)
         z = eps * std + value['mu']

@@ -20,7 +20,7 @@ class machine:
         os.makedirs(self.folder, exist_ok=True) if(self.folder) else None
         pass
         
-        # ##  Optimizer schedule in default.
+        ##  Optimizer schedule in default.
         self.schedule = lr_scheduler.StepLR(self.optimizer, step_size=10, gamma=0.9) if(self.optimizer) else None
         pass
     

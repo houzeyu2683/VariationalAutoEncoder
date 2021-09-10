@@ -4,12 +4,10 @@
 import data
 import network
 
-tabulation = data.tabulation(path="./celebfacesattributesample/csv/index.csv")
+tabulation = data.tabulation(path="./celebfaces-attribute-sample/csv/index.csv")
 tabulation.read()
-tabulation.data['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.data['image']]
-tabulation.train['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.train['image']]
-tabulation.exam['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.exam['image']]
-tabulation.test['link'] = ["./celebfacesattributesample/jpg/" + i for i in tabulation.test['image']]
+tabulation.data['link'] = ["./celebfaces-attribute-sample/jpg/" + i for i in tabulation.data['image']]
+tabulation.distinct(what='data')
 
 '''
 Example
